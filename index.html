@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Are You a Chad?</title>
   <style>
     @keyframes pop {
@@ -17,15 +17,19 @@
       padding: 20px;
       margin: 0;
       overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
     .quiz-container {
       background: rgba(255, 255, 255, 0.05);
       padding: 30px;
       border-radius: 15px;
       max-width: 700px;
-      margin: 40px auto;
+      margin: 40px auto 20px;
       box-shadow: 0 0 20px rgba(0,0,0,0.3);
       animation: pop 0.5s ease-in-out;
+      flex-grow: 1;
     }
     h1 {
       text-align: center;
@@ -92,11 +96,16 @@
       box-shadow: 0 0 20px #000;
     }
     footer {
-      margin-top: 50px;
-      padding: 20px;
       text-align: center;
-      color: #ccc;
+      padding: 15px 10px;
       font-size: 0.9em;
+      color: #aaa;
+      user-select: none;
+      background: rgba(0,0,0,0.1);
+      border-top: 1px solid #333;
+      max-width: 700px;
+      margin: 0 auto 20px;
+      border-radius: 0 0 15px 15px;
     }
   </style>
 </head>
@@ -106,16 +115,12 @@
   </div>
 
   <footer>
-    <p>&#169; Uncopyright. Steal this code. No lawyer.</p>
-    <p id="count"></p>
+    &copy; 2025 | This quiz is fully uncopyrighted. Do whatever, we don’t care.
   </footer>
 
   <script>
-    const BIN_ID = "YOUR_BIN_ID_HERE";
-    const API_KEY = "YOUR_API_KEY_HERE";
-
     const quizData = [
-      { q: "What's the move when you see a camera?", a: ["Hide like an NPC", "Peace sign 🌟", "Hit the sigma face", "Gritty then dab"], score: [0, 1, 2, 3] },
+      { q: "What's the move when you see a camera?", a: ["Hide like an NPC", "Peace sign \uD83C\uDF1F", "Hit the sigma face", "Gritty then dab"], score: [0, 1, 2, 3] },
       { q: "Someone says 'no rizz'—your response?", a: ["😭", "I got potential", "Prove them wrong", "I *invented* rizz"], score: [0, 1, 2, 3] },
       { q: "You’re ghosted. Next move?", a: ["Cry to Drake", "Send a meme", "Hit the gym", "Date their mom"], score: [0, 1, 2, 3] },
       { q: "What’s your sleep schedule?", a: ["Normal", "Midnight warrior", "3AM doomscroll", "Sleep? Never heard of her"], score: [0, 1, 2, 3] },
@@ -126,70 +131,6 @@
       { q: "Your haircut vibe?", a: ["What haircut?", "Mushroom bowl", "Mid-fade", "W haircut with giga confidence"], score: [0, 1, 2, 3] },
       { q: "First reaction to a ‘L’ in chat?", a: ["Cry", "Ratio", "Drop a meme", "BECOME the meme"], score: [0, 1, 2, 3] }
     ];
-
-    async function updateResultCount(key) {
-      const headers = {
-        'X-Master-Key': 6837d8a08960c979a5a28004,
-        'Content-Type': 'application/json'
-      };
-
-      const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, { headers });
-      const data = await res.json();
-      const counts = data.record;
-
-      counts[key] = (counts[key] || 0) + 1;
-
-      await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-        method: 'PUT',
-        headers,
-        body: JSON.stringify(counts)
-      });
-
-      return counts[key];
-    }
-
-    async function gradeQuiz() {
-      let score = 0;
-      quizData.forEach((_, i) => {
-        const selected = document.querySelector(`input[name=q${i}]:checked`);
-        if (selected) score += parseInt(selected.value);
-      });
-
-      let resultText, memeUrl, key;
-      if (score <= 7) {
-        resultText = "Certified NPC. Touch some grass, king.";
-        memeUrl = "https://i.imgflip.com/6xw90d.jpg";
-        key = 'npc';
-      } else if (score <= 15) {
-        resultText = "Almost there, lil bro. You got mid-rizz but big dreams.";
-        memeUrl = "https://i.imgflip.com/7gkmc0.jpg";
-        key = 'mid';
-      } else if (score <= 22) {
-        resultText = "Junior Chadlet. You’re climbing the clout ranks.";
-        memeUrl = "https://i.imgflip.com/7cuw0s.jpg";
-        key = 'junior';
-      } else {
-        resultText = "ULTIMATE CHAD. Rizz God. You probably flex in your sleep.";
-        memeUrl = "https://i.imgflip.com/6r6sgb.jpg";
-        key = 'chad';
-      }
-
-      const result = document.createElement('div');
-      result.classList.add('result');
-      result.textContent = resultText;
-
-      const meme = document.createElement('img');
-      meme.classList.add('meme');
-      meme.src = memeUrl;
-      meme.alt = "Meme for result";
-
-      const container = document.getElementById('quizContainer');
-      container.appendChild(result);
-      container.appendChild(meme);
-
-      const newCount = await updateResultCount(key);
-      document.getElementById('count').textContent = `${newCount} people got this result.`;
-    }
 
     function renderQuiz() {
       const container = document.getElementById('quizContainer');
@@ -212,6 +153,48 @@
       submitBtn.textContent = 'Reveal Your Chad Status';
       submitBtn.onclick = gradeQuiz;
       container.appendChild(submitBtn);
+    }
+
+    function gradeQuiz() {
+      let score = 0;
+      quizData.forEach((_, i) => {
+        const selected = document.querySelector(`input[name=q${i}]:checked`);
+        if (selected) score += parseInt(selected.value);
+      });
+
+      let resultText, memeUrl;
+      if (score <= 7) {
+        resultText = "Certified NPC. Touch some grass, king.";
+        memeUrl = "https://i.imgflip.com/6xw90d.jpg";
+      } else if (score <= 15) {
+        resultText = "Almost there, lil bro. You got mid-rizz but big dreams.";
+        memeUrl = "https://i.imgflip.com/7gkmc0.jpg";
+      } else if (score <= 22) {
+        resultText = "Junior Chadlet. You’re climbing the clout ranks.";
+        memeUrl = "https://i.imgflip.com/7cuw0s.jpg";
+      } else {
+        resultText = "ULTIMATE CHAD. Rizz God. You probably flex in your sleep.";
+        memeUrl = "https://i.imgflip.com/6r6sgb.jpg";
+      }
+
+      const container = document.getElementById('quizContainer');
+      // Remove old results before adding new
+      const oldResult = container.querySelector('.result');
+      const oldMeme = container.querySelector('.meme');
+      if (oldResult) oldResult.remove();
+      if (oldMeme) oldMeme.remove();
+
+      const result = document.createElement('div');
+      result.classList.add('result');
+      result.textContent = resultText;
+
+      const meme = document.createElement('img');
+      meme.classList.add('meme');
+      meme.src = memeUrl;
+      meme.alt = "Meme for result";
+
+      container.appendChild(result);
+      container.appendChild(meme);
     }
 
     renderQuiz();
